@@ -1,0 +1,7 @@
+{
+  "name": "Docker Helper",
+  "description": "Docker container creation, Docker Compose configuration, and containerization best practices",
+  "category": "devops",
+  "author": "Skill Hub",
+  "original_repo": "builtin"
+}

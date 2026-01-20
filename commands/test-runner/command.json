@@ -1,0 +1,7 @@
+{
+  "name": "Test Runner",
+  "description": "Smart test runner that detects your test framework and runs relevant tests automatically",
+  "category": "testing",
+  "author": "Wuxing",
+  "trigger": "/test"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "epub",
+  "description": "Convert markdown documents to professional EPUB ebooks",
+  "category": "document",
+  "author": "smerchek",
+  "original_repo": "https://github.com/smerchek/claude-epub-skill",
+  "synced_at": "2026-01-19"
+}

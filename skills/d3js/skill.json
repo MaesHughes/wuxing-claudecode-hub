@@ -1,0 +1,8 @@
+{
+  "name": "d3js",
+  "description": "Teach Claude to generate D3 charts and interactive data visualizations",
+  "category": "data",
+  "author": "chrisvoncsefalvay",
+  "original_repo": "https://github.com/chrisvoncsefalvay/claude-d3js-skill",
+  "synced_at": "2026-01-19"
+}

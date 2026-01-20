@@ -1,0 +1,58 @@
+{
+  "name": "@daxiongzhangmen/wuxing-claudecode-hub",
+  "version": "1.0.0",
+  "description": "Claude Code Extension Manager - Manage Skills, Commands, and MCP Servers",
+  "main": "server/index.js",
+  "bin": {
+    "claude-hub": "./bin/claude-hub.js"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "sync": "node sync/sync.js"
+  },
+  "keywords": [
+    "claude-code",
+    "claudecode",
+    "cursor",
+    "windsurf",
+    "agent-skills",
+    "skills",
+    "commands",
+    "mcp",
+    "mcp-servers",
+    "ai",
+    "coding-assistant",
+    "claude",
+    "anthropic",
+    "extension-manager"
+  ],
+  "author": "MaesHughes",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.22.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MaesHughes/wuxing-claudecode-hub"
+  },
+  "homepage": "https://github.com/MaesHughes/wuxing-claudecode-hub#readme",
+  "bugs": {
+    "url": "https://github.com/MaesHughes/wuxing-claudecode-hub/issues"
+  },
+  "files": [
+    "bin",
+    "server",
+    "public",
+    "sync",
+    "skills",
+    "commands",
+    "README.md",
+    "package.json",
+    "LICENSE"
+  ]
+}

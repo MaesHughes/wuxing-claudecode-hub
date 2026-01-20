@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wuxing ClaudeCode Hub - Claude Code Extension Manager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f7;
+      color: #1a1a1e;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0;
+      border-bottom: 1px solid #e0e0e5;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+    }
+    h1 { font-size: 2.5em; margin-bottom: 10px; color: #1a1a1e; }
+    .subtitle { color: #666; }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      border: 1px solid #d0d0d5;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover { background: #f0f0f5; }
+    .tab-btn.active {
+      background: #4a90d9;
+      color: #ffffff;
+      border-color: #4a90d9;
+    }
+    .tab-btn .coming-soon {
+      font-size: 0.75em;
+      opacity: 0.7;
+    }
+
+    /* Tab Content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Coming Soon Page */
+    .coming-soon-page {
+      text-align: center;
+      padding: 80px 40px;
+    }
+    .coming-soon-icon {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+    .coming-soon-title {
+      font-size: 1.8em;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #1a1a1e;
+    }
+    .coming-soon-desc {
+      font-size: 1.1em;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .coming-soon-version {
+      color: #888;
+      font-style: italic;
+    }
+
+    /* Search Box */
+    .search-box {
+      margin: 30px 0;
+      display: flex;
+      gap: 10px;
+    }
+    #searchInput {
+      flex: 1;
+      padding: 15px 20px;
+      font-size: 16px;
+      border: 1px solid #d0d0d5;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1a1a1e;
+    }
+    #searchInput:focus { outline: none; border-color: #4a90d9; box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1); }
+
+    /* Categories */
+    .categories {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .category-btn {
+      padding: 8px 16px;
+      border: 1px solid #d0d0d5;
+      border-radius: 20px;
+      background: #ffffff;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .category-btn:hover { background: #4a90d9; color: #ffffff; border-color: #4a90d9; }
+    .category-btn.active {
+      background: #4a90d9;
+      color: #ffffff;
+      border-color: #4a90d9;
+    }
+
+    /* Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+      align-items: stretch;
+    }
+    .skill-card {
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid #e0e0e5;
+      border-radius: 12px;
+      padding: 20px;
+      min-height: 220px;
+      height: 100%;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .skill-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border-color: #4a90d9;
+    }
+    .skill-name {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1a1a1e;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.6em;
+      max-height: 2.6em;
+    }
+    .skill-desc {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      height: 66px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      line-height: 1.4;
+    }
+    .skill-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e5;
+      font-size: 0.85em;
+      color: #888;
+    }
+    .skill-footer {
+      margin-top: auto;
+    }
+    .install-btn {
+      padding: 8px 20px;
+      background: #4a90d9;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .install-btn:hover { background: #3a7bc8; }
+    .install-btn.installed { background: #2d6a4f; }
+    .uninstall-btn {
+      padding: 8px 16px;
+      background: #dc3545;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85em;
+      font-weight: 500;
+    }
+    .uninstall-btn:hover { background: #c82333; }
+    .uninstall-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .button-group { display: flex; gap: 8px; align-items: center; }
+    .status-installed { color: #2d6a4f; font-weight: 500; }
+    .loading { text-align: center; padding: 40px; color: #888; }
+    .stats {
+      text-align: center;
+      color: #888;
+      margin: 20px 0;
+      font-size: 0.95em;
+    }
+    .section-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      margin: 30px 0 20px 0;
+      color: #1a1a1e;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e5;
+    }
+    .uninstall-info {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #fff8e1;
+      border: 1px solid #ffd54f;
+      border-radius: 6px;
+      font-size: 0.8em;
+      color: #666;
+    }
+    .uninstall-info-title {
+      font-weight: 600;
+      color: #f57c00;
+      margin-bottom: 6px;
+    }
+    .uninstall-info-path {
+      font-family: 'Consolas', 'Monaco', monospace;
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <img src="logo.png" alt="Wuxing Logo" class="logo">
+        <h1>Wuxing ClaudeCode Hub</h1>
+      </div>
+      <p class="subtitle">Claude Code Extension Manager - Skills, Commands, MCP, Agents, Hooks</p>
+    </header>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="skills">
+        📦 Skills
+      </button>
+      <button class="tab-btn" data-tab="commands">
+        📝 Commands
+      </button>
+      <button class="tab-btn" data-tab="mcp">
+        🔌 MCP <span class="coming-soon">(即将推出)</span>
+      </button>
+      <button class="tab-btn" data-tab="agents">
+        🤖 Agents <span class="coming-soon">(即将推出)</span>
+      </button>
+      <button class="tab-btn" data-tab="hooks">
+        ⚙️ Hooks <span class="coming-soon">(即将推出)</span>
+      </button>
+    </div>
+
+    <!-- Skills Tab -->
+    <div id="skills-tab" class="tab-content active">
+      <section>
+        <h2 class="section-title">📦 已安装的 Skills</h2>
+        <div id="installedSkills" class="skills-grid">
+          <div class="loading">检测中...</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">🛒 Skills 市场</h2>
+        <div class="search-box">
+          <input type="text" id="skillsSearchInput" placeholder="搜索 skills...">
+        </div>
+        <div class="categories" id="skillsCategories"></div>
+        <div class="stats" id="skillsStats"></div>
+        <div class="skills-grid" id="skillsMarketplaceGrid">
+          <div class="loading">加载中...</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Commands Tab -->
+    <div id="commands-tab" class="tab-content">
+      <section>
+        <h2 class="section-title">📝 已安装的 Commands</h2>
+        <div id="installedCommands" class="skills-grid">
+          <div class="loading">检测中...</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">🛒 Commands 市场</h2>
+        <div class="search-box">
+          <input type="text" id="commandsSearchInput" placeholder="搜索 commands...">
+        </div>
+        <div class="categories" id="commandsCategories"></div>
+        <div class="stats" id="commandsStats"></div>
+        <div class="skills-grid" id="commandsMarketplaceGrid">
+          <div class="loading">加载中...</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- MCP Tab (Coming Soon) -->
+    <div id="mcp-tab" class="tab-content">
+      <div class="coming-soon-page">
+        <div class="coming-soon-icon">🔌</div>
+        <div class="coming-soon-title">MCP Servers 管理</div>
+        <div class="coming-soon-desc">管理您的 Model Context Protocol 服务器</div>
+        <div class="coming-soon-version">敬请期待 v2.0 版本</div>
+      </div>
+    </div>
+
+    <!-- Agents Tab (Coming Soon) -->
+    <div id="agents-tab" class="tab-content">
+      <div class="coming-soon-page">
+        <div class="coming-soon-icon">🤖</div>
+        <div class="coming-soon-title">Agents 管理</div>
+        <div class="coming-soon-desc">管理您的自主 AI 助手代理</div>
+        <div class="coming-soon-version">敬请期待 v2.0 版本</div>
+      </div>
+    </div>
+
+    <!-- Hooks Tab (Coming Soon) -->
+    <div id="hooks-tab" class="tab-content">
+      <div class="coming-soon-page">
+        <div class="coming-soon-icon">⚙️</div>
+        <div class="coming-soon-title">Hooks 管理</div>
+        <div class="coming-soon-desc">管理您的事件触发器钩子</div>
+        <div class="coming-soon-version">敬请期待 v2.0 版本</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let allSkills = [];
+    let allCommands = [];
+    let currentSkillsCategory = 'all';
+    let currentCommandsCategory = 'all';
+
+    // ==================== Tabs Navigation ====================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.dataset.tab;
+
+        // Update active button
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Update active content
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+        // Update URL hash
+        location.hash = tabName;
+      });
+    });
+
+    // Restore tab from URL hash
+    if (location.hash) {
+      const tabName = location.hash.slice(1);
+      const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+      if (tabBtn) tabBtn.click();
+    }
+
+    // ==================== Skills ====================
+    async function loadSkills() {
+      const response = await fetch('/api/skills');
+      allSkills = await response.json();
+
+      // Check installation status for each skill
+      for (const skill of allSkills) {
+        try {
+          const statusRes = await fetch(`/api/skills/${skill.id}/status?scope=global`);
+          const statusData = await statusRes.json();
+          skill.installed = statusData.installed;
+        } catch {
+          skill.installed = false;
+        }
+      }
+
+      renderInstalledSkills();
+      renderSkillsCategories();
+      renderSkillsMarketplace();
+    }
+
+    function renderInstalledSkills() {
+      const installed = allSkills.filter(s => s.installed);
+      const container = document.getElementById('installedSkills');
+
+      if (installed.length === 0) {
+        container.innerHTML = '<div class="loading">暂无已安装的 skills</div>';
+        return;
+      }
+
+      container.innerHTML = installed.map(skill => {
+        const skillPath = getSkillPath(skill.id);
+        return `
+          <div class="skill-card">
+            <div class="skill-name">${skill.name}</div>
+            <div class="skill-desc">${skill.description}</div>
+            <div class="skill-footer">
+              <div class="skill-meta">
+                <span class="status-installed">✓ 已安装</span>
+                <button class="uninstall-btn" onclick="uninstallSkill('${skill.id}', '${skill.name}')">
+                  卸载
+                </button>
+              </div>
+              <div class="uninstall-info">
+                <div class="uninstall-info-title">📍 路径: ${skillPath}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSkillsCategories() {
+      const categories = ['all', ...new Set(allSkills.map(s => s.category))];
+      const container = document.getElementById('skillsCategories');
+
+      container.innerHTML = categories.map(cat => `
+        <button class="category-btn ${cat === currentSkillsCategory ? 'active' : ''}"
+                onclick="setSkillsCategory('${cat}')">
+          ${cat === 'all' ? '全部' : cat} (${cat === 'all' ? allSkills.length : allSkills.filter(s => s.category === cat).length})
+        </button>
+      `).join('');
+
+      document.getElementById('skillsStats').textContent = `共 ${allSkills.length} 个 skills`;
+    }
+
+    function renderSkillsMarketplace() {
+      const search = document.getElementById('skillsSearchInput').value.toLowerCase();
+      let filtered = allSkills.filter(s => !s.installed);
+
+      if (currentSkillsCategory !== 'all') {
+        filtered = filtered.filter(s => s.category === currentSkillsCategory);
+      }
+
+      if (search) {
+        filtered = filtered.filter(s =>
+          s.name.toLowerCase().includes(search) ||
+          s.description.toLowerCase().includes(search)
+        );
+      }
+
+      const grid = document.getElementById('skillsMarketplaceGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="loading">没有可安装的 skills</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(skill => `
+        <div class="skill-card">
+          <div class="skill-name">${skill.name}</div>
+          <div class="skill-desc">${skill.description}</div>
+          <div class="skill-footer">
+            <div class="skill-meta">
+              <span>${skill.author}</span>
+              <button class="install-btn" onclick="installSkill('${skill.id}')">安装</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setSkillsCategory(category) {
+      currentSkillsCategory = category;
+      renderSkillsCategories();
+      renderSkillsMarketplace();
+    }
+
+    function getSkillPath(skillId) {
+      return '点击卸载按钮打开文件夹';
+    }
+
+    async function installSkill(skillId) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = '安装中...';
+
+      try {
+        const response = await fetch(`/api/skills/${skillId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'global' })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          await loadSkills();
+        } else {
+          btn.textContent = '失败: ' + (result.error || '未知错误');
+          btn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Install error:', error);
+        btn.textContent = '错误: ' + error.message;
+        btn.disabled = false;
+      }
+    }
+
+    async function uninstallSkill(skillId, skillName) {
+      try {
+        const response = await fetch(`/api/skills/${skillId}/open-folder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'global' })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setTimeout(() => {
+            loadSkills();
+          }, 2000);
+        } else {
+          alert('❌ 打开文件夹失败: ' + result.error);
+        }
+      } catch (error) {
+        alert('❌ 错误: ' + error.message);
+      }
+    }
+
+    document.getElementById('skillsSearchInput').addEventListener('input', renderSkillsMarketplace);
+
+    // ==================== Commands ====================
+    async function loadCommands() {
+      const response = await fetch('/api/commands');
+      allCommands = await response.json();
+
+      // Check installation status for each command
+      for (const cmd of allCommands) {
+        try {
+          const statusRes = await fetch(`/api/commands/${cmd.id}/status?scope=global`);
+          const statusData = await statusRes.json();
+          cmd.installed = statusData.installed;
+        } catch {
+          cmd.installed = false;
+        }
+      }
+
+      renderInstalledCommands();
+      renderCommandsCategories();
+      renderCommandsMarketplace();
+    }
+
+    function renderInstalledCommands() {
+      const container = document.getElementById('installedCommands');
+      container.innerHTML = '<div class="loading">加载中...</div>';
+
+      // Fetch all installed commands from ~/.claude/commands/
+      fetch('/api/commands/installed?scope=global')
+        .then(res => res.json())
+        .then(installed => {
+          if (installed.length === 0) {
+            container.innerHTML = '<div class="loading">暂无已安装的 commands</div>';
+            return;
+          }
+
+          container.innerHTML = installed.map(cmd => `
+            <div class="skill-card">
+              <div class="skill-name">${cmd.name}</div>
+              <div class="skill-desc">${cmd.description}</div>
+              <div class="skill-footer">
+                <div class="skill-meta">
+                  <span class="status-installed">✓ 已安装</span>
+                  ${!cmd.isFromMarketplace ? '<span style="color:#888;font-size:0.8em">第三方</span>' : ''}
+                  <button class="uninstall-btn" onclick="uninstallCommand('${cmd.id}')">
+                    卸载
+                  </button>
+                </div>
+                <div class="uninstall-info">
+                  <div class="uninstall-info-title">📝 触发: ${cmd.trigger}</div>
+                  <div class="uninstall-info-path">📂 ${cmd.filePath}</div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          console.error('Error loading installed commands:', err);
+          container.innerHTML = '<div class="loading">加载失败</div>';
+        });
+    }
+
+    function renderCommandsCategories() {
+      const categories = ['all', ...new Set(allCommands.map(c => c.category))];
+      const container = document.getElementById('commandsCategories');
+
+      container.innerHTML = categories.map(cat => `
+        <button class="category-btn ${cat === currentCommandsCategory ? 'active' : ''}"
+                onclick="setCommandsCategory('${cat}')">
+          ${cat === 'all' ? '全部' : cat} (${cat === 'all' ? allCommands.length : allCommands.filter(c => c.category === cat).length})
+        </button>
+      `).join('');
+
+      document.getElementById('commandsStats').textContent = `共 ${allCommands.length} 个 commands`;
+    }
+
+    function renderCommandsMarketplace() {
+      const search = document.getElementById('commandsSearchInput').value.toLowerCase();
+      let filtered = allCommands.filter(c => !c.installed);
+
+      if (currentCommandsCategory !== 'all') {
+        filtered = filtered.filter(c => c.category === currentCommandsCategory);
+      }
+
+      if (search) {
+        filtered = filtered.filter(c =>
+          c.name.toLowerCase().includes(search) ||
+          c.description.toLowerCase().includes(search)
+        );
+      }
+
+      const grid = document.getElementById('commandsMarketplaceGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="loading">没有可安装的 commands</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(cmd => `
+        <div class="skill-card">
+          <div class="skill-name">${cmd.name}</div>
+          <div class="skill-desc">${cmd.description}</div>
+          <div class="skill-footer">
+            <div class="skill-meta">
+              <span>${cmd.trigger}</span>
+              <button class="install-btn" onclick="installCommand('${cmd.id}')">安装</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setCommandsCategory(category) {
+      currentCommandsCategory = category;
+      renderCommandsCategories();
+      renderCommandsMarketplace();
+    }
+
+    async function installCommand(commandId) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = '安装中...';
+
+      try {
+        const response = await fetch(`/api/commands/${commandId}/install`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'global' })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          await loadCommands();
+        } else {
+          btn.textContent = '失败: ' + (result.error || '未知错误');
+          btn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Install error:', error);
+        btn.textContent = '错误: ' + error.message;
+        btn.disabled = false;
+      }
+    }
+
+    async function uninstallCommand(commandId) {
+      try {
+        const response = await fetch(`/api/commands/${commandId}/open-folder`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'global' })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // 刷新状态（用户删除后可能需要刷新）
+          setTimeout(() => {
+            renderInstalledCommands();
+          }, 2000);
+        } else {
+          alert('❌ 打开文件夹失败: ' + result.error);
+        }
+      } catch (error) {
+        alert('❌ 错误: ' + error.message);
+      }
+    }
+
+    document.getElementById('commandsSearchInput').addEventListener('input', renderCommandsMarketplace);
+
+    // ==================== Initialize ====================
+    loadSkills();
+    loadCommands();
+  </script>
+</body>
+</html>

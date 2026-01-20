@@ -1,0 +1,7 @@
+{
+  "name": "Smart Commit",
+  "description": "Smart git commit command that helps you write better commit messages following conventional commits format",
+  "category": "development",
+  "author": "Wuxing",
+  "trigger": "/commit"
+}

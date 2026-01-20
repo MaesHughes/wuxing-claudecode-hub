@@ -1,0 +1,8 @@
+{
+  "name": "csv-summarizer",
+  "description": "Automatically analyze CSV files and generate visualized insights",
+  "category": "data",
+  "author": "coffeefuelbump",
+  "original_repo": "https://github.com/coffeefuelbump/csv-data-summarizer-claude-skill",
+  "synced_at": "2026-01-19"
+}
