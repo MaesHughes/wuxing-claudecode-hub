@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/MaesHughes/wuxing-claudecode-hub/blob/main/README.md">
-    <img src="https://img.shields.io/badge/%F0%9F%87%BA%F0%9F%9F%A3-English-language-blue?style=for-the-badge" alt="English">
+    <b>English | 中文</b>
   </a>
 </p>
 
