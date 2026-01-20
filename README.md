@@ -2,6 +2,12 @@
   <img src="assets/banner.png" alt="ClaudeCode Hub Banner" width="100%">
 </p>
 
+<p align="center">
+  <a href="https://github.com/MaesHughes/wuxing-claudecode-hub/blob/main/README.zh-CN.md">
+    <img src="https://img.shields.io/badge/%F0%9F%87%A8%EA%9C%B3%E5%9B%BD-language-blue?style=for-the-badge" alt="中文">
+  </a>
+</p>
+
 <h1 align="center">Wuxing ClaudeCode Hub</h1>
 
 <p align="center">
@@ -373,8 +379,6 @@ Our goal is to build a useful tool for the community first, then introduce optio
 <div align="center">
 
 **Made with ❤️ by the Wuxing team**
-
-**[🇨🇳 中文](README.zh-CN.md) | [🇺🇸 English](README.md)**
 
 **⭐ Star us on GitHub — it helps!**
 

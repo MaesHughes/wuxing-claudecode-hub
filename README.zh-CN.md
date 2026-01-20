@@ -2,6 +2,12 @@
   <img src="assets/banner.png" alt="ClaudeCode Hub 横幅" width="100%">
 </p>
 
+<p align="center">
+  <a href="https://github.com/MaesHughes/wuxing-claudecode-hub/blob/main/README.md">
+    <img src="https://img.shields.io/badge/%F0%9F%87%BA%F0%9F%9F%A3-English-language-blue?style=for-the-badge" alt="English">
+  </a>
+</p>
+
 <h1 align="center">Wuxing ClaudeCode Hub</h1>
 
 <p align="center">
@@ -373,8 +379,6 @@ ClaudeCode Hub 是**开源软件（MIT 许可证）**，将始终提供免费版
 <div align="center">
 
 **由 Wuxing 团队用 ❤️ 打造**
-
-**[🇨🇳 中文](README.zh-CN.md) | [🇺🇸 English](README.md)**
 
 **⭐ 如果觉得有帮助，请在 GitHub 上点个 Star — 这对我们很重要！**
 
