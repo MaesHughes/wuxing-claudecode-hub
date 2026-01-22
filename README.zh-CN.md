@@ -54,11 +54,9 @@
 
 - **Skills** - 复杂的多文件 Agent 能力
 - **Commands** - 简单的斜杠命令
-- **MCP Servers** - 模型上下文协议外部连接器
+- **MCP Servers** - 模型上下文协议服务器
 
 可以把它理解为 Claude Code 的包管理器 —— 让你能够轻松发现、安装、更新和管理所有扩展，无需触碰命令行。
-
-> **注意：** 我们还提供 [Hooks 配置模板](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Guide) 用于自动化工作流。
 
 ## 为什么选择 ClaudeCode Hub？
 
@@ -109,9 +107,7 @@
 ### 🚀 即将推出
 
 - **MCP Servers 管理** - 浏览和配置模型上下文协议服务器
-- **云端同步** - 跨设备同步扩展（Pro 功能）
-- **团队协作** - 与团队共享扩展配置（Pro 功能）
-- **Hooks 模板** - 开箱即用的自动化配置（文档）
+- **更多扩展** - 持续添加社区优质扩展
 
 ---
 
@@ -231,15 +227,6 @@ ClaudeCode Hub 管理三种主要的 Claude Code 扩展：
 
 ---
 
-### 📚 其他资源
-
-**Hooks 配置**
-虽然 Hooks 不通过 Web 界面管理，但我们提供全面的文档和模板来设置自动化工作流：
-- [Hooks 配置指南](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Guide)
-- [常用 Hooks 模板](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Templates)
-
----
-
 ## 开发路线
 
 ### v1.0（当前）
@@ -255,11 +242,11 @@ ClaudeCode Hub 管理三种主要的 Claude Code 扩展：
 - [ ] 扩展评分和评论
 - [ ] 安装历史
 - [ ] 批量操作
-- [ ] Hooks 文档和模板
+- [ ] 更多市场扩展
 
 ### v2.0（2026 Q2）
-- [ ] 云端同步（Pro）
-- [ ] 团队协作（Pro）
+- [ ] 云端同步
+- [ ] 团队协作
 - [ ] 私有扩展市场
 - [ ] CLI 改进
 
@@ -342,23 +329,6 @@ claudecode-hub/
 ### 🌐 关注我们
 - 关注博客：[blog.wuxingcodes.com](https://blog.wuxingcodes.com/)
 - 如果这个项目对你有帮助，请在 GitHub 上点个 Star！
-
----
-
-## 商业模式
-
-ClaudeCode Hub 是**开源软件（MIT 许可证）**，将始终提供免费版本。
-
-**当前（v1.0）：** 完全免费开源。
-
-**未来的 Pro 功能：**
-- 跨设备云端同步
-- 团队协作
-- 私有扩展市场
-- 使用分析和推荐
-- 优先支持
-
-我们的目标是先为社区构建有用的工具，然后为高级用户和团队引入可选的付费功能。
 
 ---
 

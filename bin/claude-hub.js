@@ -13,7 +13,7 @@ function showHelp() {
   console.log(`
 🚀 ClaudeCode Hub - Claude Code Extension Manager
 
-Manage Skills, Commands, MCP Servers, Agents, and Hooks for Claude Code
+Manage Skills, Commands, and MCP Servers for Claude Code
 
 Usage:
   claude-hub               Start the web interface

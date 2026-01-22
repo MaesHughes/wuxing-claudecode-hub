@@ -58,8 +58,6 @@
 
 Think of it as a package manager for Claude Code - making it easy to discover, install, update, and manage all your extensions without touching the command line.
 
-> **Note:** We also provide [Hooks configuration templates](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Guide) for automation workflows.
-
 ## Why ClaudeCode Hub?
 
 Managing Claude Code extensions today means:
@@ -109,9 +107,7 @@ Managing Claude Code extensions today means:
 ### 🚀 Coming Soon
 
 - **MCP Servers Management** - Browse and configure Model Context Protocol servers
-- **Cloud Sync** - Sync your extensions across devices (Pro feature)
-- **Team Collaboration** - Share extension configs with your team (Pro feature)
-- **Hooks Templates** - Ready-to-use automation configurations (documentation)
+- **More Extensions** - Continuously adding quality community extensions
 
 ---
 
@@ -231,15 +227,6 @@ Model Context Protocol servers that connect Claude to external tools, databases,
 
 ---
 
-### 📚 Additional Resources
-
-**Hooks Configuration**
-While Hooks are not managed through the web interface, we provide comprehensive documentation and templates for setting up automation workflows:
-- [Hooks Configuration Guide](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Guide)
-- [Common Hooks Templates](https://github.com/MaesHughes/wuxing-claudecode-hub/wiki/Hooks-Templates)
-
----
-
 ## Roadmap
 
 ### v1.0 (Current)
@@ -255,11 +242,11 @@ While Hooks are not managed through the web interface, we provide comprehensive 
 - [ ] Extension ratings and reviews
 - [ ] Installation history
 - [ ] Batch operations
-- [ ] Hooks documentation and templates
+- [ ] More marketplace extensions
 
 ### v2.0 (Q2 2026)
-- [ ] Cloud sync (Pro)
-- [ ] Team collaboration (Pro)
+- [ ] Cloud sync
+- [ ] Team collaboration
 - [ ] Private extension marketplace
 - [ ] CLI improvements
 
@@ -342,23 +329,6 @@ Latest updates, tutorials, and insights about ClaudeCode Hub and AI development.
 ### 🌐 Social
 - Follow our blog: [blog.wuxingcodes.com](https://blog.wuxingcodes.com/)
 - Star us on GitHub if you find this project helpful!
-
----
-
-## Business Model
-
-ClaudeCode Hub is **open source (MIT License)** and will always offer a free tier.
-
-**Current (v1.0):** Completely free and open source.
-
-**Future Pro features:**
-- Cloud sync across devices
-- Team collaboration
-- Private extension marketplace
-- Usage analytics and recommendations
-- Priority support
-
-Our goal is to build a useful tool for the community first, then introduce optional paid features for power users and teams.
 
 ---
 
