@@ -24,6 +24,9 @@ let commandsCache = [];
 // MCP Marketplace
 const mcpMarketplace = require('./mcp-marketplace');
 
+// Agents Marketplace
+const agentsMarketplace = require('./agents-marketplace');
+
 // Load skills metadata
 async function loadSkills() {
   try {
@@ -509,40 +512,52 @@ app.post('/api/commands/open-folder', (req, res) => {
       ? path.join(homeDir, '.claude', 'commands')
       : path.join(process.cwd(), '.claude', 'commands');
 
-    // commandId 可能包含路径分隔符，需要转换为系统路径
+    // commandId 可能包含路径分隔符（如 "zcf/feat"），需要转换为系统路径
     const commandRelativePath = commandId.replace(/\//g, path.sep);
     const commandPath = path.join(commandsDir, `${commandRelativePath}.md`);
 
-    // Check file exists
+    console.log(`   Commands folder: ${commandsDir}`);
+    console.log(`   Command file: ${commandPath}`);
+    console.log(`   Command to delete: ${commandId}.md`);
+
+    // Check if commands directory exists
     try {
-      const stat = fs.statSync(commandPath);
-      if (!stat.isFile()) {
+      const commandsDirStat = fs.statSync(commandsDir);
+      if (!commandsDirStat.isDirectory()) {
         return res.status(404).json({
           success: false,
-          error: `Command file not found: ${commandPath}`
+          error: `Commands directory not found or is not a directory: ${commandsDir}`
         });
       }
     } catch {
       return res.status(404).json({
         success: false,
-        error: `Command file not found: ${commandPath}`
+        error: `Commands directory not found: ${commandsDir}`
       });
     }
 
-    // 安全检查
+    // Check file exists（但不阻止打开文件夹）
+    let fileExists = false;
+    try {
+      const stat = fs.statSync(commandPath);
+      fileExists = stat.isFile();
+    } catch {
+      fileExists = false;
+    }
+
+    // 如果文件不存在，仍然打开文件夹让用户查看
+    if (!fileExists) {
+      console.log(`   ⚠ Warning: Command file not found, but opening folder anyway`);
+    }
+
+    // 安全检查 - 确保 commandsDir 在允许的路径内
     const allowedPath = path.join(homeDir, '.claude', 'commands');
-    if (!commandPath.startsWith(allowedPath)) {
+    if (!commandsDir.startsWith(allowedPath)) {
       return res.status(403).json({
         success: false,
         error: 'Security check failed: Path is outside allowed directory'
       });
     }
-
-    // 如果 command 在子目录中，打开子目录的父目录（即 commands 根目录）
-    // 这样用户可以看到所有子目录
-
-    console.log(`   Commands folder: ${commandsDir}`);
-    console.log(`   Command to delete: ${commandId}.md`);
 
     // 根据平台选择打开文件夹的命令
     let openCmd;
@@ -570,7 +585,10 @@ app.post('/api/commands/open-folder', (req, res) => {
         commandId: commandId,
         folderPath: commandsDir,
         commandPath: commandPath,
-        message: `Opened commands folder. Navigate to "${commandId}.md" and delete it to uninstall.`
+        fileExists: fileExists,
+        message: fileExists
+          ? `Opened commands folder. Navigate to "${commandId}.md" and delete it to uninstall.`
+          : `Opened commands folder. File "${commandId}.md" was not found, but you can check the folder.`
       });
     });
 
@@ -747,6 +765,163 @@ app.post('/api/mcp/open-config', (req, res) => {
     });
   } catch (error) {
     console.error('Error opening config:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==================== Agents ====================
+
+// Get Agents marketplace
+app.get('/api/agents', (req, res) => {
+  res.json(agentsMarketplace);
+});
+
+// Get installed agents from ~/.claude/agents/
+app.get('/api/agents/installed', async (req, res) => {
+  const { scope = 'user' } = req.query;
+
+  try {
+    const agentsDir = scope === 'user'
+      ? path.join(os.homedir(), '.claude', 'agents')
+      : path.join(process.cwd(), '.claude', 'agents');
+
+    console.log(`\n📖 Reading agents from: ${agentsDir}`);
+
+    let agents = [];
+
+    try {
+      // Recursively read all .md files in the agents directory
+      const readAgentsRecursively = async (dir, basePath = '') => {
+        const entries = await fsp.readdir(dir, { withFileTypes: true });
+
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+
+          if (entry.isDirectory()) {
+            // Recursively scan subdirectories
+            await readAgentsRecursively(fullPath, path.join(basePath, entry.name));
+          } else if (entry.isFile() && entry.name.endsWith('.md')) {
+            // Found an agent file
+            const content = await fsp.readFile(fullPath, 'utf-8');
+
+            // Parse YAML frontmatter
+            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+            let metadata = {};
+            let promptContent = content;
+
+            if (frontmatterMatch) {
+              try {
+                metadata = require('js-yaml').load(frontmatterMatch[1]);
+                promptContent = frontmatter[2];
+              } catch {
+                // If YAML parsing fails, treat as plain markdown
+              }
+            }
+
+            // Get relative path from agents directory
+            const relativePath = path.join(basePath, entry.name).replace(/\\/g, '/').replace(/\.md$/, '');
+
+            agents.push({
+              id: relativePath,
+              name: metadata.name || relativePath,
+              description: metadata.description || 'Custom agent',
+              category: metadata.category || '其他',
+              author: metadata.author || 'Custom',
+              type: metadata.type || 'agent',
+              filePath: fullPath,
+              fromMarketplace: false,
+              prompt: promptContent
+            });
+          }
+        }
+      };
+
+      await readAgentsRecursively(agentsDir);
+    } catch {
+      console.log('   Agents directory not found or empty');
+    }
+
+    console.log(`   Found ${agents.length} installed agents`);
+    res.json(agents);
+  } catch (error) {
+    console.error('Error reading agents:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Check if agent is installed
+app.get('/api/agents/:agentId/status', async (req, res) => {
+  const { agentId } = req.params;
+  const { scope = 'user' } = req.query;
+
+  try {
+    const agentsDir = scope === 'user'
+      ? path.join(os.homedir(), '.claude', 'agents')
+      : path.join(process.cwd(), '.claude', 'agents');
+
+    // agentId might contain slashes, convert to proper path
+    const agentPath = path.join(agentsDir, `${agentId.replace(/\//g, path.sep)}.md`);
+
+    let exists = false;
+    try {
+      const stat = await fsp.stat(agentPath);
+      exists = stat.isFile();
+    } catch {
+      exists = false;
+    }
+
+    res.json({ installed: exists, agentId });
+  } catch (error) {
+    console.error('Error checking agent status:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Open agents folder for manual agent uninstall
+app.post('/api/agents/open-folder', (req, res) => {
+  const { scope = 'user' } = req.body;
+
+  try {
+    const agentsDir = scope === 'user'
+      ? path.join(os.homedir(), '.claude', 'agents')
+      : path.join(process.cwd(), '.claude', 'agents');
+
+    console.log(`\n📂 Opening agents folder: ${agentsDir}`);
+
+    // 如果目录不存在，创建一个空的
+    if (!fs.existsSync(agentsDir)) {
+      console.log('   Agents directory not found, creating...');
+      fs.mkdirSync(agentsDir, { recursive: true });
+    }
+
+    // 打开 agents 文件夹
+    let openCmd;
+    if (process.platform === 'win32') {
+      openCmd = `cmd /c start "" "${agentsDir}"`;
+    } else if (process.platform === 'darwin') {
+      openCmd = `open "${agentsDir}"`;
+    } else {
+      openCmd = `xdg-open "${agentsDir}"`;
+    }
+
+    exec(openCmd, (error) => {
+      if (error) {
+        console.error(`   ✗ Failed to open folder:`, error);
+        return res.status(500).json({
+          success: false,
+          error: `Failed to open folder: ${error.message}`
+        });
+      }
+
+      console.log(`   ✓ Folder opened`);
+      res.json({
+        success: true,
+        agentsDir: agentsDir,
+        message: `Agents 文件夹已打开。您可以查看、编辑或删除 .md 文件来管理 agents。`
+      });
+    });
+  } catch (error) {
+    console.error('Error opening agents folder:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

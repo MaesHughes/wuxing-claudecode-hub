@@ -287,7 +287,7 @@
         🔌 MCP
       </button>
       <button class="tab-btn" data-tab="agents">
-        🤖 Agents <span class="coming-soon">(即将推出)</span>
+        🤖 Agents
       </button>
     </div>
 
@@ -357,14 +357,26 @@
       </section>
     </div>
 
-    <!-- Agents Tab (Coming Soon) -->
+    <!-- Agents Tab -->
     <div id="agents-tab" class="tab-content">
-      <div class="coming-soon-page">
-        <div class="coming-soon-icon">🤖</div>
-        <div class="coming-soon-title">Agents 管理</div>
-        <div class="coming-soon-desc">管理您的自主 AI 助手代理</div>
-        <div class="coming-soon-version">敬请期待 v2.0 版本</div>
-      </div>
+      <section>
+        <h2 class="section-title">🤖 已安装的 Agents</h2>
+        <div id="installedAgents" class="skills-grid">
+          <div class="loading">检测中...</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">🛒 Agents 市场</h2>
+        <div class="search-box">
+          <input type="text" id="agentsSearchInput" placeholder="搜索 agents...">
+        </div>
+        <div class="categories" id="agentsCategories"></div>
+        <div class="stats" id="agentsStats"></div>
+        <div class="skills-grid" id="agentsMarketplaceGrid">
+          <div class="loading">加载中...</div>
+        </div>
+      </section>
     </div>
 
   </div>
@@ -924,10 +936,208 @@ ${mcp.requiresAuth ? '\n⚠️ 此服务器需要认证，请配置相关的 API
 
     document.getElementById('mcpSearchInput').addEventListener('input', renderMcpMarketplace);
 
+    // ==================== Agents ====================
+    let allAgents = [];
+    let currentAgentsCategory = 'all';
+
+    async function loadAgents() {
+      const response = await fetch('/api/agents');
+      allAgents = await response.json();
+
+      // Check installation status for each agent
+      for (const agent of allAgents) {
+        try {
+          const statusRes = await fetch(`/api/agents/${agent.id}/status?scope=user`);
+          const statusData = await statusRes.json();
+          agent.installed = statusData.installed;
+        } catch {
+          agent.installed = false;
+        }
+      }
+
+      renderInstalledAgents();
+      renderAgentsCategories();
+      renderAgentsMarketplace();
+    }
+
+    function renderInstalledAgents() {
+      const container = document.getElementById('installedAgents');
+      container.innerHTML = '<div class="loading">加载中...</div>';
+
+      // Fetch all installed agents
+      fetch('/api/agents/installed?scope=user')
+        .then(res => res.json())
+        .then(installed => {
+          if (installed.length === 0) {
+            container.innerHTML = '<div class="loading">暂无已安装的 agents</div>';
+            return;
+          }
+
+          container.innerHTML = installed.map(agent => {
+            return `
+              <div class="skill-card">
+                <div class="skill-name">${agent.name}</div>
+                <div class="skill-desc">${agent.description}</div>
+                <div class="skill-footer">
+                  <div class="skill-meta">
+                    <span class="status-installed">✓ 已安装</span>
+                    <span style="color:#888;font-size:0.8em">${agent.category}</span>
+                    ${!agent.fromMarketplace ? '<span style="color:#888;font-size:0.8em">自定义</span>' : ''}
+                    <button class="uninstall-btn" onclick="uninstallAgent()">
+                      卸载
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        })
+        .catch(err => {
+          console.error('Error loading installed agents:', err);
+          container.innerHTML = '<div class="loading">加载失败</div>';
+        });
+    }
+
+    function renderAgentsCategories() {
+      const categories = ['all', ...new Set(allAgents.map(a => a.category))];
+      const container = document.getElementById('agentsCategories');
+
+      container.innerHTML = categories.map(cat => `
+        <button class="category-btn ${cat === currentAgentsCategory ? 'active' : ''}"
+                onclick="setAgentsCategory('${cat}')">
+          ${cat === 'all' ? '全部' : cat} (${cat === 'all' ? allAgents.length : allAgents.filter(a => a.category === cat).length})
+        </button>
+      `).join('');
+
+      document.getElementById('agentsStats').textContent = `共 ${allAgents.length} 个 agents`;
+    }
+
+    function renderAgentsMarketplace() {
+      const search = document.getElementById('agentsSearchInput').value.toLowerCase();
+      let filtered = allAgents.filter(a => !a.installed);
+
+      if (currentAgentsCategory !== 'all') {
+        filtered = filtered.filter(a => a.category === currentAgentsCategory);
+      }
+
+      if (search) {
+        filtered = filtered.filter(a =>
+          a.name.toLowerCase().includes(search) ||
+          a.description.toLowerCase().includes(search) ||
+          (a.tags && a.tags.some(tag => tag.toLowerCase().includes(search)))
+        );
+      }
+
+      const grid = document.getElementById('agentsMarketplaceGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="loading">没有可安装的 agents</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(agent => {
+        return `
+          <div class="skill-card">
+            <div class="skill-name">${agent.name}</div>
+            <div class="skill-desc">${agent.description}</div>
+            <div class="skill-footer">
+              <div class="skill-meta">
+                <span style="color:#888;font-size:0.85em">${agent.type}</span>
+                <button class="install-btn" onclick="installAgent('${agent.id}')">配置</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setAgentsCategory(category) {
+      currentAgentsCategory = category;
+      renderAgentsCategories();
+      renderAgentsMarketplace();
+    }
+
+    async function installAgent(agentId) {
+      const agent = allAgents.find(a => a.id === agentId);
+      if (!agent) return;
+
+      const message = `
+要配置 "${agent.name}" Agent，请按照以下步骤操作：
+
+1. 打开 Agents 文件夹
+2. 在文件夹中创建一个新的 .md 文件（例如：${agent.id}.md）
+3. 在文件中添加以下内容：
+
+---
+name: ${agent.name}
+description: ${agent.description}
+category: ${agent.category}
+author: ${agent.author}
+---
+
+# ${agent.name} 的提示词
+
+请在此处添加 agent 的具体指令和行为...
+
+4. 保存文件后，重启 Claude Code
+5. 在 Claude Code 中使用 \\invoke ${agent.id} 来调用此 agent
+
+点击"确定"打开 Agents 文件夹，取消放弃配置。
+      `;
+
+      if (confirm(message)) {
+        try {
+          const response = await fetch('/api/agents/open-folder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scope: 'user' })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert('✅ ' + result.message + '\n\n请按照上述说明手动创建 agent 文件。');
+          } else {
+            alert('❌ 打开文件夹失败: ' + result.error);
+          }
+        } catch (error) {
+          alert('❌ 错误: ' + error.message);
+        }
+      }
+    }
+
+    async function uninstallAgent() {
+      if (confirm('要卸载 Agent，请手动删除 ~/.claude/agents/ 目录中对应的 .md 文件。\n\n点击"确定"打开 Agents 文件夹。')) {
+        try {
+          const response = await fetch('/api/agents/open-folder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scope: 'user' })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert('✅ ' + result.message);
+            setTimeout(() => {
+              renderInstalledAgents();
+            }, 2000);
+          } else {
+            alert('❌ 打开文件夹失败: ' + result.error);
+          }
+        } catch (error) {
+          alert('❌ 错误: ' + error.message);
+        }
+      }
+    }
+
+    document.getElementById('agentsSearchInput').addEventListener('input', renderAgentsMarketplace);
+
     // ==================== Initialize ====================
     loadSkills();
     loadCommands();
     loadMcp();
+    loadAgents();
   </script>
 </body>
 </html>
