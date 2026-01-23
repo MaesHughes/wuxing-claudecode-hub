@@ -8,6 +8,10 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>Compatible with Claude Code, Cursor, Windsurf, Codex, Zed, and more AI-powered IDEs</strong>
+</p>
+
 <h1 align="center">Wuxing ClaudeCode Hub</h1>
 
 <p align="center">

@@ -8,6 +8,10 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>兼容 Claude Code、Cursor、Windsurf、Codex、Zed 等 AI 编程工具</strong>
+</p>
+
 <h1 align="center">Wuxing ClaudeCode Hub</h1>
 
 <p align="center">
