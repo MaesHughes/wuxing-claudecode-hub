@@ -284,7 +284,7 @@
         📝 Commands
       </button>
       <button class="tab-btn" data-tab="mcp">
-        🔌 MCP <span class="coming-soon">(即将推出)</span>
+        🔌 MCP
       </button>
       <button class="tab-btn" data-tab="agents">
         🤖 Agents <span class="coming-soon">(即将推出)</span>
@@ -335,14 +335,26 @@
       </section>
     </div>
 
-    <!-- MCP Tab (Coming Soon) -->
+    <!-- MCP Tab -->
     <div id="mcp-tab" class="tab-content">
-      <div class="coming-soon-page">
-        <div class="coming-soon-icon">🔌</div>
-        <div class="coming-soon-title">MCP Servers 管理</div>
-        <div class="coming-soon-desc">管理您的 Model Context Protocol 服务器</div>
-        <div class="coming-soon-version">敬请期待 v2.0 版本</div>
-      </div>
+      <section>
+        <h2 class="section-title">🔌 已安装的 MCP Servers</h2>
+        <div id="installedMcp" class="skills-grid">
+          <div class="loading">检测中...</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">🛒 MCP 市场</h2>
+        <div class="search-box">
+          <input type="text" id="mcpSearchInput" placeholder="搜索 MCP servers...">
+        </div>
+        <div class="categories" id="mcpCategories"></div>
+        <div class="stats" id="mcpStats"></div>
+        <div class="skills-grid" id="mcpMarketplaceGrid">
+          <div class="loading">加载中...</div>
+        </div>
+      </section>
     </div>
 
     <!-- Agents Tab (Coming Soon) -->
@@ -697,10 +709,10 @@
 
     async function uninstallCommand(commandId) {
       try {
-        const response = await fetch(`/api/commands/${commandId}/open-folder`, {
+        const response = await fetch('/api/commands/open-folder', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ scope: 'global' })
+          body: JSON.stringify({ commandId: commandId, scope: 'global' })
         });
 
         const result = await response.json();
@@ -720,9 +732,202 @@
 
     document.getElementById('commandsSearchInput').addEventListener('input', renderCommandsMarketplace);
 
+    // ==================== MCP Servers ====================
+    let allMcp = [];
+    let currentMcpCategory = 'all';
+
+    async function loadMcp() {
+      const response = await fetch('/api/mcp');
+      allMcp = await response.json();
+
+      // Check installation status for each MCP server
+      for (const mcp of allMcp) {
+        try {
+          const statusRes = await fetch(`/api/mcp/${mcp.id}/status?scope=user`);
+          const statusData = await statusRes.json();
+          mcp.installed = statusData.installed;
+        } catch {
+          mcp.installed = false;
+        }
+      }
+
+      renderInstalledMcp();
+      renderMcpCategories();
+      renderMcpMarketplace();
+    }
+
+    function renderInstalledMcp() {
+      const container = document.getElementById('installedMcp');
+      container.innerHTML = '<div class="loading">加载中...</div>';
+
+      // Fetch all installed MCP servers
+      fetch('/api/mcp/installed?scope=user')
+        .then(res => res.json())
+        .then(installed => {
+          if (installed.length === 0) {
+            container.innerHTML = '<div class="loading">暂无已安装的 MCP servers</div>';
+            return;
+          }
+
+          container.innerHTML = installed.map(mcp => {
+            const typeLabel = mcp.type === 'stdio' ? '本地进程' : mcp.type === 'http' ? 'HTTP' : mcp.type;
+            return `
+              <div class="skill-card">
+                <div class="skill-name">${mcp.name}</div>
+                <div class="skill-desc">${mcp.description}</div>
+                <div class="skill-footer">
+                  <div class="skill-meta">
+                    <span class="status-installed">✓ 已安装</span>
+                    <span style="color:#888;font-size:0.8em">${typeLabel}</span>
+                    ${!mcp.fromMarketplace ? '<span style="color:#888;font-size:0.8em">自定义</span>' : ''}
+                    <button class="uninstall-btn" onclick="uninstallMcp()">
+                      卸载
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        })
+        .catch(err => {
+          console.error('Error loading installed MCP:', err);
+          container.innerHTML = '<div class="loading">加载失败</div>';
+        });
+    }
+
+    function renderMcpCategories() {
+      const categories = ['all', ...new Set(allMcp.map(m => m.category))];
+      const container = document.getElementById('mcpCategories');
+
+      container.innerHTML = categories.map(cat => `
+        <button class="category-btn ${cat === currentMcpCategory ? 'active' : ''}"
+                onclick="setMcpCategory('${cat}')">
+          ${cat === 'all' ? '全部' : cat} (${cat === 'all' ? allMcp.length : allMcp.filter(m => m.category === cat).length})
+        </button>
+      `).join('');
+
+      document.getElementById('mcpStats').textContent = `共 ${allMcp.length} 个 MCP servers`;
+    }
+
+    function renderMcpMarketplace() {
+      const search = document.getElementById('mcpSearchInput').value.toLowerCase();
+      let filtered = allMcp.filter(m => !m.installed);
+
+      if (currentMcpCategory !== 'all') {
+        filtered = filtered.filter(m => m.category === currentMcpCategory);
+      }
+
+      if (search) {
+        filtered = filtered.filter(m =>
+          m.name.toLowerCase().includes(search) ||
+          m.description.toLowerCase().includes(search) ||
+          (m.tags && m.tags.some(tag => tag.toLowerCase().includes(search)))
+        );
+      }
+
+      const grid = document.getElementById('mcpMarketplaceGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="loading">没有可安装的 MCP servers</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(mcp => {
+        const typeLabel = mcp.type === 'stdio' ? '本地进程' : mcp.type === 'http' ? 'HTTP' : mcp.type;
+        const authBadge = mcp.requiresAuth ? '<span style="background:#ff9800;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7em;margin-left:6px">需认证</span>' : '';
+
+        return `
+          <div class="skill-card">
+            <div class="skill-name">${mcp.name}${authBadge}</div>
+            <div class="skill-desc">${mcp.description}</div>
+            <div class="skill-footer">
+              <div class="skill-meta">
+                <span style="color:#888;font-size:0.85em">${typeLabel}</span>
+                <button class="install-btn" onclick="installMcp('${mcp.id}')">配置</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setMcpCategory(category) {
+      currentMcpCategory = category;
+      renderMcpCategories();
+      renderMcpMarketplace();
+    }
+
+    async function installMcp(mcpId) {
+      const mcp = allMcp.find(m => m.id === mcpId);
+      if (!mcp) return;
+
+      const message = `
+要安装 "${mcp.name}" MCP server，请按照以下步骤操作：
+
+1. 打开配置文件所在文件夹
+2. 编辑 ~/.claude.json 文件
+3. 在 "mcpServers" 部分添加以下配置：
+
+${JSON.stringify(mcp.config, null, 2)}
+
+4. 保存文件后，重启 Claude Code
+${mcp.requiresAuth ? '\n⚠️ 此服务器需要认证，请配置相关的 API Key 或环境变量。' : ''}
+
+点击"确定"打开配置文件夹，取消放弃安装。
+      `;
+
+      if (confirm(message)) {
+        try {
+          const response = await fetch('/api/mcp/open-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scope: 'user' })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert('✅ ' + result.message + '\n\n请按照上述说明手动配置 MCP server。');
+          } else {
+            alert('❌ 打开配置失败: ' + result.error);
+          }
+        } catch (error) {
+          alert('❌ 错误: ' + error.message);
+        }
+      }
+    }
+
+    async function uninstallMcp() {
+      if (confirm('要卸载 MCP server，请手动编辑 ~/.claude.json 文件，删除对应的配置项。\n\n点击"确定"打开配置文件夹。')) {
+        try {
+          const response = await fetch('/api/mcp/open-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scope: 'user' })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert('✅ ' + result.message);
+            setTimeout(() => {
+              renderInstalledMcp();
+            }, 2000);
+          } else {
+            alert('❌ 打开配置失败: ' + result.error);
+          }
+        } catch (error) {
+          alert('❌ 错误: ' + error.message);
+        }
+      }
+    }
+
+    document.getElementById('mcpSearchInput').addEventListener('input', renderMcpMarketplace);
+
     // ==================== Initialize ====================
     loadSkills();
     loadCommands();
+    loadMcp();
   </script>
 </body>
 </html>

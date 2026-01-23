@@ -21,6 +21,9 @@ const commandsPath = path.join(__dirname, '../commands');
 let skillsCache = [];
 let commandsCache = [];
 
+// MCP Marketplace
+const mcpMarketplace = require('./mcp-marketplace');
+
 // Load skills metadata
 async function loadSkills() {
   try {
@@ -494,8 +497,8 @@ app.get('/api/commands/:commandId/status', async (req, res) => {
 });
 
 // Open folder to manually uninstall command
-app.post('/api/commands/:commandId/open-folder', (req, res) => {
-  const { commandId } = req.params;  // 可能是 "commit" 或 "zcf/workflow"
+app.post('/api/commands/open-folder', (req, res) => {
+  const { commandId } = req.body;  // 从 body 获取，避免路由解析问题
   const { scope = 'global' } = req.body;
 
   console.log(`\n📂 Opening folder for uninstall: ${commandId}`);
@@ -605,6 +608,145 @@ app.get('/api/commands/:commandId/uninstall-path', (req, res) => {
     });
   } catch (error) {
     console.error('Error getting uninstall path:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==================== MCP Servers ====================
+
+// Get MCP marketplace
+app.get('/api/mcp', (req, res) => {
+  res.json(mcpMarketplace);
+});
+
+// Get installed MCP servers from ~/.claude.json
+app.get('/api/mcp/installed', async (req, res) => {
+  const { scope = 'user' } = req.query;
+
+  try {
+    const homeDir = os.homedir();
+    const configPath = scope === 'user'
+      ? path.join(homeDir, '.claude.json')
+      : path.join(process.cwd(), '.mcp.json');
+
+    console.log(`\n📖 Reading MCP config from: ${configPath}`);
+
+    let config = {};
+    try {
+      const configContent = await fsp.readFile(configPath, 'utf-8');
+      config = JSON.parse(configContent);
+    } catch {
+      // File doesn't exist or is invalid
+      console.log('   Config file not found or empty');
+    }
+
+    const mcpServers = config.mcpServers || {};
+
+    // Convert to array format
+    const installed = Object.entries(mcpServers).map(([name, serverConfig]) => {
+      const marketplaceItem = mcpMarketplace.find(m => m.id === name);
+
+      return {
+        id: name,
+        name: marketplaceItem?.name || name,
+        description: marketplaceItem?.description || 'Custom MCP server',
+        category: marketplaceItem?.category || '其他',
+        type: serverConfig.type || (serverConfig.command ? 'stdio' : 'http'),
+        transport: serverConfig.type || (serverConfig.command ? 'stdio' : 'http'),
+        config: serverConfig,
+        fromMarketplace: !!marketplaceItem
+      };
+    });
+
+    console.log(`   Found ${installed.length} installed MCP servers`);
+    res.json(installed);
+  } catch (error) {
+    console.error('Error reading MCP config:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Check if MCP server is installed
+app.get('/api/mcp/:mcpId/status', async (req, res) => {
+  const { mcpId } = req.params;
+  const { scope = 'user' } = req.query;
+
+  try {
+    const homeDir = os.homedir();
+    const configPath = scope === 'user'
+      ? path.join(homeDir, '.claude.json')
+      : path.join(process.cwd(), '.mcp.json');
+
+    let config = {};
+    try {
+      const configContent = await fsp.readFile(configPath, 'utf-8');
+      config = JSON.parse(configContent);
+    } catch {
+      // File doesn't exist
+    }
+
+    const mcpServers = config.mcpServers || {};
+    const installed = mcpServers.hasOwnProperty(mcpId);
+
+    res.json({ installed, mcpId });
+  } catch (error) {
+    console.error('Error checking MCP status:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Open config file for manual MCP uninstall
+app.post('/api/mcp/open-config', (req, res) => {
+  const { scope = 'user' } = req.body;
+
+  try {
+    const homeDir = os.homedir();
+    const configPath = scope === 'user'
+      ? path.join(homeDir, '.claude.json')
+      : path.join(process.cwd(), '.mcp.json');
+
+    console.log(`\n📂 Opening config file: ${configPath}`);
+
+    // 如果文件不存在，创建一个空的
+    if (!fs.existsSync(configPath)) {
+      console.log('   Config file not found, creating...');
+      const emptyConfig = { mcpServers: {} };
+      if (scope === 'user') {
+        emptyConfig.permissions = { allow: [], deny: [], ask: [] };
+      }
+      fs.writeFileSync(configPath, JSON.stringify(emptyConfig, null, 2));
+    }
+
+    // 打开包含配置文件的目录
+    const configDir = path.dirname(configPath);
+
+    let openCmd;
+    if (process.platform === 'win32') {
+      openCmd = `cmd /c start "" "${configDir}"`;
+    } else if (process.platform === 'darwin') {
+      openCmd = `open "${configDir}"`;
+    } else {
+      openCmd = `xdg-open "${configDir}"`;
+    }
+
+    exec(openCmd, (error) => {
+      if (error) {
+        console.error(`   ✗ Failed to open folder:`, error);
+        return res.status(500).json({
+          success: false,
+          error: `Failed to open folder: ${error.message}`
+        });
+      }
+
+      console.log(`   ✓ Folder opened`);
+      res.json({
+        success: true,
+        configPath: configPath,
+        message: `配置文件所在文件夹已打开。请编辑 ${path.basename(configPath)} 文件来手动移除 MCP 服务器配置。`
+      });
+    });
+  } catch (error) {
+    console.error('Error opening config:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
