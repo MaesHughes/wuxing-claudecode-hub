@@ -52,9 +52,10 @@
 
 **ClaudeCode Hub** is a powerful web-based management tool for [Claude Code](https://claude.ai/code) extensions. It provides a beautiful, intuitive interface to manage:
 
-- **Skills** - Complex multi-file agent capabilities
-- **Commands** - Simple slash commands
-- **MCP Servers** - Model Context Protocol external connectors
+- **📦 Skills** - Complex multi-file agent capabilities
+- **📝 Commands** - Simple slash commands
+- **🔌 MCP Servers** - Model Context Protocol external connectors
+- **🤖 Agents** - Custom AI agent configurations
 
 Think of it as a package manager for Claude Code - making it easy to discover, install, update, and manage all your extensions without touching the command line.
 
@@ -93,11 +94,23 @@ Managing Claude Code extensions today means:
   - YAML frontmatter parsing for descriptions
   - Filter by category or search by keyword
 
+- **MCP Servers Management**
+  - Browse marketplace MCP servers
+  - View installed servers with configuration details
+  - Easy config file access for manual setup
+  - Support for stdio and HTTP transport types
+
+- **Agents Management**
+  - View all installed AI agents
+  - Browse marketplace agent templates
+  - Custom agent creation support
+  - YAML frontmatter metadata parsing
+
 - **Beautiful Web Interface**
   - Modern, responsive design
   - Dark mode optimized
   - Real-time search and filtering
-  - Tab-based navigation for Five-Piece Set
+  - Tab-based navigation for Skills, Commands, MCP, and Agents
 
 - **Safety First**
   - Opens folders for manual uninstall (no auto-delete)
@@ -106,7 +119,9 @@ Managing Claude Code extensions today means:
 
 ### 🚀 Coming Soon
 
-- **MCP Servers Management** - Browse and configure Model Context Protocol servers
+- **Extension Ratings & Reviews** - Community feedback system
+- **Installation History** - Track your extension installations
+- **Batch Operations** - Install/uninstall multiple extensions at once
 - **More Extensions** - Continuously adding quality community extensions
 
 ---
@@ -176,6 +191,8 @@ PORT=4000 claude-hub
 The interface will open automatically. Use it to:
 - Browse and install Skills
 - Discover and install Commands
+- Configure MCP Servers
+- Manage AI Agents
 - View your installed extensions
 - Uninstall extensions safely
 
@@ -196,25 +213,30 @@ Open `http://localhost:3807` in your browser to access the full management inter
 ## Screenshots
 
 <div align="center">
-  <img src="assets/skill01.png" alt="Skills Management" width="800">
-  <p><em>Skills Management - Browse and Install</em></p>
+  <img src="assets/skills.png" alt="Skills Management" width="800">
+  <p><em>📦 Skills Management - Browse and Install</em></p>
 </div>
 
 <div align="center">
-  <img src="assets/commands01.png" alt="Commands Management" width="800">
-  <p><em>Commands Management - Discover Slash Commands</em></p>
+  <img src="assets/commands.png" alt="Commands Management" width="800">
+  <p><em>📝 Commands Management - Discover Slash Commands</em></p>
 </div>
 
 <div align="center">
-  <img src="assets/mcp01.png" alt="MCP Servers (Coming Soon)" width="800">
-  <p><em>MCP Servers Management - Coming Soon</em></p>
+  <img src="assets/mcp.png" alt="MCP Servers" width="800">
+  <p><em>🔌 MCP Servers Management - Configure External Tools</em></p>
+</div>
+
+<div align="center">
+  <img src="assets/agents.png" alt="Agents" width="800">
+  <p><em>🤖 Agents Management - AI Agent Configuration</em></p>
 </div>
 
 ---
 
 ## Extension Types
 
-ClaudeCode Hub manages three main types of Claude Code extensions:
+ClaudeCode Hub manages four main types of Claude Code extensions:
 
 ### 📦 Skills
 Complex, multi-file capabilities that extend Claude's abilities. Skills are like plugins that can include their own code, configuration, and documentation.
@@ -223,7 +245,10 @@ Complex, multi-file capabilities that extend Claude's abilities. Skills are like
 Simple markdown-based slash commands. Great for quick workflows, templates, and repetitive tasks. Supports namespaces like `/zcf:feat`.
 
 ### 🔌 MCP Servers
-Model Context Protocol servers that connect Claude to external tools, databases, and APIs. *(Coming Soon)*
+Model Context Protocol servers that connect Claude to external tools, databases, and APIs. Configure stdio or HTTP transport types with custom settings.
+
+### 🤖 Agents
+Custom AI agent configurations with YAML frontmatter metadata. Create specialized agents for specific tasks with custom prompts and behaviors.
 
 ---
 
@@ -232,13 +257,14 @@ Model Context Protocol servers that connect Claude to external tools, databases,
 ### v1.0 (Current)
 - [x] Skills management
 - [x] Commands management
-- [x] Web interface with Skills/Commands/MCP tabs
+- [x] MCP Servers management
+- [x] Agents management
+- [x] Web interface with Skills/Commands/MCP/Agents tabs
 - [x] YAML frontmatter parsing
 - [x] Namespace command support
 - [x] Safe uninstall approach
 
 ### v1.5 (Q1 2026)
-- [ ] MCP Servers management
 - [ ] Extension ratings and reviews
 - [ ] Installation history
 - [ ] Batch operations

@@ -52,9 +52,10 @@
 
 **ClaudeCode Hub** 是一款强大的基于 Web 的 [Claude Code](https://claude.ai/code) 扩展管理工具。它提供了美观、直观的界面来管理：
 
-- **Skills** - 复杂的多文件 Agent 能力
-- **Commands** - 简单的斜杠命令
-- **MCP Servers** - 模型上下文协议服务器
+- **📦 Skills** - 复杂的多文件 Agent 能力
+- **📝 Commands** - 简单的斜杠命令
+- **🔌 MCP Servers** - 模型上下文协议服务器
+- **🤖 Agents** - 自定义 AI Agent 配置
 
 可以把它理解为 Claude Code 的包管理器 —— 让你能够轻松发现、安装、更新和管理所有扩展，无需触碰命令行。
 
@@ -93,11 +94,23 @@
   - 解析 YAML frontmatter 描述
   - 按类别过滤或关键字搜索
 
+- **MCP Servers 管理**
+  - 浏览市场 MCP 服务器
+  - 查看已安装服务器及配置详情
+  - 便捷的配置文件访问
+  - 支持 stdio 和 HTTP 传输类型
+
+- **Agents 管理**
+  - 查看所有已安装的 AI Agents
+  - 浏览市场 Agent 模板
+  - 支持自定义 Agent 创建
+  - YAML frontmatter 元数据解析
+
 - **精美的 Web 界面**
   - 现代响应式设计
   - 深色模式优化
   - 实时搜索和过滤
-  - 五件套标签页导航
+  - Skills、Commands、MCP、Agents 标签页导航
 
 - **安全第一**
   - 打开文件夹手动卸载（无自动删除）
@@ -106,7 +119,9 @@
 
 ### 🚀 即将推出
 
-- **MCP Servers 管理** - 浏览和配置模型上下文协议服务器
+- **扩展评分和评论** - 社区反馈系统
+- **安装历史** - 追踪扩展安装记录
+- **批量操作** - 同时安装/卸载多个扩展
 - **更多扩展** - 持续添加社区优质扩展
 
 ---
@@ -176,6 +191,8 @@ PORT=4000 claude-hub
 界面将自动打开。使用它可以：
 - 浏览和安装 Skills
 - 发现和安装 Commands
+- 配置 MCP Servers
+- 管理 AI Agents
 - 查看已安装的扩展
 - 安全卸载扩展
 
@@ -196,25 +213,30 @@ claude-hub --version    # 显示版本信息
 ## 界面截图
 
 <div align="center">
-  <img src="assets/skill01.png" alt="Skills 管理" width="800">
-  <p><em>Skills 管理 - 浏览和安装</em></p>
+  <img src="assets/skills.png" alt="Skills 管理" width="800">
+  <p><em>📦 Skills 管理 - 浏览和安装</em></p>
 </div>
 
 <div align="center">
-  <img src="assets/commands01.png" alt="Commands 管理" width="800">
-  <p><em>Commands 管理 - 发现斜杠命令</em></p>
+  <img src="assets/commands.png" alt="Commands 管理" width="800">
+  <p><em>📝 Commands 管理 - 发现斜杠命令</em></p>
 </div>
 
 <div align="center">
-  <img src="assets/mcp01.png" alt="MCP Servers（即将推出）" width="800">
-  <p><em>MCP Servers 管理 - 即将推出</em></p>
+  <img src="assets/mcp.png" alt="MCP Servers" width="800">
+  <p><em>🔌 MCP Servers 管理 - 配置外部工具</em></p>
+</div>
+
+<div align="center">
+  <img src="assets/agents.png" alt="Agents" width="800">
+  <p><em>🤖 Agents 管理 - AI Agent 配置</em></p>
 </div>
 
 ---
 
 ## 扩展类型
 
-ClaudeCode Hub 管理三种主要的 Claude Code 扩展：
+ClaudeCode Hub 管理四种主要的 Claude Code 扩展：
 
 ### 📦 Skills
 复杂的多文件能力，扩展 Claude 的功能。Skills 类似于插件，可以包含自己的代码、配置和文档。
@@ -223,7 +245,10 @@ ClaudeCode Hub 管理三种主要的 Claude Code 扩展：
 基于 Markdown 的简单斜杠命令。适用于快速工作流、模板和重复性任务。支持命名空间如 `/zcf:feat`。
 
 ### 🔌 MCP Servers
-模型上下文协议服务器，将 Claude 连接到外部工具、数据库和 API。*（即将推出）*
+模型上下文协议服务器，将 Claude 连接到外部工具、数据库和 API。支持 stdio 和 HTTP 传输类型，可配置自定义设置。
+
+### 🤖 Agents
+具有 YAML frontmatter 元数据的自定义 AI Agent 配置。为特定任务创建专用 Agent，具有自定义提示和行为。
 
 ---
 
@@ -232,13 +257,14 @@ ClaudeCode Hub 管理三种主要的 Claude Code 扩展：
 ### v1.0（当前）
 - [x] Skills 管理
 - [x] Commands 管理
-- [x] Skills/Commands/MCP 标签页 Web 界面
+- [x] MCP Servers 管理
+- [x] Agents 管理
+- [x] Skills/Commands/MCP/Agents 标签页 Web 界面
 - [x] YAML frontmatter 解析
 - [x] 命名空间命令支持
 - [x] 安全卸载方式
 
 ### v1.5（2026 Q1）
-- [ ] MCP Servers 管理
 - [ ] 扩展评分和评论
 - [ ] 安装历史
 - [ ] 批量操作
