@@ -263,9 +263,123 @@
       border-radius: 3px;
       word-break: break-all;
     }
+
+    /* Verified Badge */
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 0.75em;
+      font-weight: 600;
+      margin-left: 8px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    .verified-badge svg {
+      width: 14px;
+      height: 14px;
+    }
+    .official-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7em;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    /* Official Dev Badge - 官方开发专属 */
+    .official-dev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 0.75em;
+      font-weight: 600;
+      margin-left: 6px;
+      box-shadow: 0 2px 8px rgba(245, 39, 17, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .official-dev-badge svg {
+      width: 14px;
+      height: 14px;
+    }
+    .skill-card.verified {
+      border: 2px solid transparent;
+      background: linear-gradient(#ffffff, #ffffff) padding-box,
+                  linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+    }
+    .skill-card.verified:hover {
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    }
+    /* Official Dev Card Style */
+    .skill-card.official-dev {
+      border: 2px solid transparent;
+      background: linear-gradient(#ffffff, #ffffff) padding-box,
+                  linear-gradient(135deg, #f5af19 0%, #f12711 100%) border-box;
+      position: relative;
+    }
+    .skill-card.official-dev::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+      border-radius: 14px;
+      z-index: -1;
+      opacity: 0.1;
+    }
+    .skill-card.official-dev:hover {
+      box-shadow: 0 8px 24px rgba(245, 39, 17, 0.3);
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 5px;
+    }
+    .lang-btn {
+      padding: 6px 12px;
+      border: 1px solid #d0d0d5;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      font-size: 0.9em;
+    }
+    .lang-btn:hover {
+      background: #f0f0f5;
+    }
+    .lang-btn.active {
+      background: #4a90d9;
+      color: #ffffff;
+      border-color: #4a90d9;
+    }
   </style>
 </head>
 <body>
+  <!-- Language Switcher -->
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="zh" onclick="setLanguage('zh')">中文</button>
+    <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+  </div>
+
   <div class="container">
     <header>
       <div class="header-content">
@@ -387,6 +501,147 @@
     let allCommands = [];
     let currentSkillsCategory = 'all';
     let currentCommandsCategory = 'all';
+    let currentLanguage = 'zh';
+
+    // ==================== Translations ====================
+    const translations = {
+      zh: {
+        // Tabs
+        tabSkills: '📦 Skills',
+        tabCommands: '📝 Commands',
+        tabMCP: '🔌 MCP',
+        tabAgents: '🤖 Agents',
+        // Section titles
+        installedSkills: '📦 已安装的 Skills',
+        skillsMarketplace: '🛒 Skills 市场',
+        installedCommands: '📝 已安装的 Commands',
+        commandsMarketplace: '🛒 Commands 市场',
+        installedMCP: '🔌 已安装的 MCP Servers',
+        mcpMarketplace: '🛒 MCP 市场',
+        installedAgents: '🤖 已安装的 Agents',
+        agentsMarketplace: '🛒 Agents 市场',
+        // Common
+        all: '全部',
+        searching: '搜索中...',
+        loading: '加载中...',
+        detecting: '检测中...',
+        noneInstalled: '暂无已安装的 {type}',
+        noneAvailable: '没有可安装的 {type}',
+        total: '共 {count} 个 {type}',
+        // Buttons
+        install: '安装',
+        configure: '配置',
+        uninstall: '卸载',
+        installing: '安装中...',
+        // Status
+        installed: '✓ 已安装',
+        // Badges
+        officialDev: '官方开发',
+        verified: '官方认证',
+        custom: '自定义',
+        requiresAuth: '需认证',
+        // Types
+        typeLocal: '本地进程',
+        typeHTTP: 'HTTP',
+        // Placeholders
+        searchSkills: '搜索 skills...',
+        searchCommands: '搜索 commands...',
+        searchMCP: '搜索 MCP servers...',
+        searchAgents: '搜索 agents...',
+        // Messages
+        success: '✅',
+        error: '❌',
+        // Official Dev Badge
+        officialDevDesc: '官方开发专属'
+      },
+      en: {
+        // Tabs
+        tabSkills: '📦 Skills',
+        tabCommands: '📝 Commands',
+        tabMCP: '🔌 MCP',
+        tabAgents: '🤖 Agents',
+        // Section titles
+        installedSkills: '📦 Installed Skills',
+        skillsMarketplace: '🛒 Skills Marketplace',
+        installedCommands: '📝 Installed Commands',
+        commandsMarketplace: '🛒 Commands Marketplace',
+        installedMCP: '🔌 Installed MCP Servers',
+        mcpMarketplace: '🛒 MCP Marketplace',
+        installedAgents: '🤖 Installed Agents',
+        agentsMarketplace: '🛒 Agents Marketplace',
+        // Common
+        all: 'All',
+        searching: 'Searching...',
+        loading: 'Loading...',
+        detecting: 'Detecting...',
+        noneInstalled: 'No installed {type}',
+        noneAvailable: 'No available {type}',
+        total: 'Total {count} {type}',
+        // Buttons
+        install: 'Install',
+        configure: 'Configure',
+        uninstall: 'Uninstall',
+        installing: 'Installing...',
+        // Status
+        installed: '✓ Installed',
+        // Badges
+        officialDev: 'Official Dev',
+        verified: 'Verified',
+        custom: 'Custom',
+        requiresAuth: 'Auth Required',
+        // Types
+        typeLocal: 'Local Process',
+        typeHTTP: 'HTTP',
+        // Placeholders
+        searchSkills: 'Search skills...',
+        searchCommands: 'Search commands...',
+        searchMCP: 'Search MCP servers...',
+        searchAgents: 'Search agents...',
+        // Messages
+        success: '✅',
+        error: '❌',
+        // Official Dev Badge
+        officialDevDesc: 'Official Development'
+      }
+    };
+
+    function t(key, params = {}) {
+      let text = translations[currentLanguage][key] || key;
+      Object.keys(params).forEach(param => {
+        text = text.replace(`{${param}}`, params[param]);
+      });
+      return text;
+    }
+
+    function setLanguage(lang) {
+      currentLanguage = lang;
+
+      // Update language buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Re-render all content
+      renderAllContent();
+    }
+
+    function renderAllContent() {
+      // Re-render each section with new language
+      renderInstalledSkills();
+      renderSkillsMarketplace();
+      renderInstalledCommands();
+      renderCommandsMarketplace();
+      renderInstalledMcp();
+      renderMcpMarketplace();
+      renderInstalledAgents();
+      renderAgentsMarketplace();
+
+      // Update placeholders
+      document.getElementById('skillsSearchInput').placeholder = t('searchSkills');
+      document.getElementById('commandsSearchInput').placeholder = t('searchCommands');
+      document.getElementById('mcpSearchInput').placeholder = t('searchMCP');
+      document.getElementById('agentsSearchInput').placeholder = t('searchAgents');
+    }
 
     // ==================== Tabs Navigation ====================
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -781,12 +1036,51 @@
             return;
           }
 
+          // 排序：官方开发 > 官方认证 > 其他
+          installed.sort((a, b) => {
+            const marketplaceMcpA = allMcp.find(m => m.id === a.id);
+            const marketplaceMcpB = allMcp.find(m => m.id === b.id);
+            const aIsOfficial = marketplaceMcpA && marketplaceMcpA.isOfficial ? 2 :
+                               (marketplaceMcpA && (marketplaceMcpA.verified || marketplaceMcpA.official) ? 1 : 0);
+            const bIsOfficial = marketplaceMcpB && marketplaceMcpB.isOfficial ? 2 :
+                               (marketplaceMcpB && (marketplaceMcpB.verified || marketplaceMcpB.official) ? 1 : 0);
+            return bIsOfficial - aIsOfficial;
+          });
+
           container.innerHTML = installed.map(mcp => {
             const typeLabel = mcp.type === 'stdio' ? '本地进程' : mcp.type === 'http' ? 'HTTP' : mcp.type;
+            // Check if this is a verified/official MCP from marketplace
+            const marketplaceMcp = allMcp.find(m => m.id === mcp.id);
+            const isOfficial = marketplaceMcp && marketplaceMcp.isOfficial;
+            const isVerified = marketplaceMcp && (marketplaceMcp.verified || marketplaceMcp.official);
+
+            // 官方开发专属标记 (金色)
+            const officialDevBadge = isOfficial ? `
+              <span class="official-dev-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+                官方开发
+              </span>
+            ` : '';
+
+            // 官方认证标记 (紫色) - 但不是官方开发的
+            const verifiedBadge = !isOfficial && isVerified ? `
+              <span class="verified-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                官方认证
+              </span>
+            ` : '';
+
+            const cardClass = isOfficial ? 'skill-card official-dev' :
+                              isVerified ? 'skill-card verified' : 'skill-card';
+
             return `
-              <div class="skill-card">
-                <div class="skill-name">${mcp.name}</div>
-                <div class="skill-desc">${mcp.description}</div>
+              <div class="${cardClass}">
+                <div class="skill-name">${mcp.name}${officialDevBadge}${verifiedBadge}</div>
+                <div class="skill-desc">${mcp.description || '无描述'}</div>
                 <div class="skill-footer">
                   <div class="skill-meta">
                     <span class="status-installed">✓ 已安装</span>
@@ -837,6 +1131,16 @@
         );
       }
 
+      // 排序：官方开发 > 官方认证 > 其他，然后按热度排序
+      filtered.sort((a, b) => {
+        const aIsOfficial = a.isOfficial ? 2 : (a.verified || a.official ? 1 : 0);
+        const bIsOfficial = b.isOfficial ? 2 : (b.verified || b.official ? 1 : 0);
+        if (aIsOfficial !== bIsOfficial) {
+          return bIsOfficial - aIsOfficial;
+        }
+        return (b.popularity || 0) - (a.popularity || 0);
+      });
+
       const grid = document.getElementById('mcpMarketplaceGrid');
 
       if (filtered.length === 0) {
@@ -848,9 +1152,32 @@
         const typeLabel = mcp.type === 'stdio' ? '本地进程' : mcp.type === 'http' ? 'HTTP' : mcp.type;
         const authBadge = mcp.requiresAuth ? '<span style="background:#ff9800;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7em;margin-left:6px">需认证</span>' : '';
 
+        // 官方开发专属标记 (金色)
+        const officialDevBadge = mcp.isOfficial ? `
+          <span class="official-dev-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+            官方开发
+          </span>
+        ` : '';
+
+        // 官方认证标记 (紫色) - 但不是官方开发的
+        const verifiedBadge = !mcp.isOfficial && (mcp.verified || mcp.official) ? `
+          <span class="verified-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+            </svg>
+            官方认证
+          </span>
+        ` : '';
+
+        const cardClass = mcp.isOfficial ? 'skill-card official-dev' :
+                          (mcp.verified || mcp.official) ? 'skill-card verified' : 'skill-card';
+
         return `
-          <div class="skill-card">
-            <div class="skill-name">${mcp.name}${authBadge}</div>
+          <div class="${cardClass}">
+            <div class="skill-name">${mcp.name}${authBadge}${officialDevBadge}${verifiedBadge}</div>
             <div class="skill-desc">${mcp.description}</div>
             <div class="skill-footer">
               <div class="skill-meta">

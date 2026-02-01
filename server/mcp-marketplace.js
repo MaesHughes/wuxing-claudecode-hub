@@ -202,6 +202,42 @@ const mcpMarketplace = [
     requiresAuth: false,
     popularity: 78,
     tags: ['docker', '容器', 'devops']
+  },
+  {
+    id: 'wuxing-search',
+    name: 'Wuxing Search',
+    description: '基于 SearXNG 的无限制搜索 MCP，聚合 100+ 搜索引擎。完全免费、无 API 限额、隐私友好，专为课程开发场景优化。',
+    category: '搜索',
+    author: 'Wuxing Codes',
+    homepage: 'https://github.com/MaesHughes/wuxing-search-mcp',
+    type: 'stdio',
+    transport: 'stdio',
+    verified: true,
+    official: true,
+    isOfficial: true,  // 官方开发专属标记
+    config: {
+      command: 'node',
+      args: ['D:\\\\path\\\\to\\\\wuxing-search-mcp\\\\src\\\\index.js'],
+      userConfigRequired: true,
+      envExample: 'SEARXNG_URL="http://localhost:8888"',
+      docsUrl: 'https://github.com/MaesHughes/wuxing-search-mcp#readme',
+      preInstallSteps: [
+        '需要先安装 Docker',
+        '运行: docker run -d -p 8888:8080 --name wuxing-searxng searxng/searxng:latest'
+      ],
+      postInstallNotice: 'Wuxing Search 需要本地 SearXNG 服务运行，请确保 Docker 容器已启动。'
+    },
+    requiresAuth: false,
+    popularity: 75,
+    tags: ['搜索', 'web', 'free', 'searxng', '课程开发'],
+    features: [
+      '完全免费，无 API 费用',
+      '无使用限制，支持高频搜索',
+      '多搜索引擎聚合（100+）',
+      '隐私保护，数据本地化',
+      '课程开发场景优化'
+    ],
+    badge: 'FREE'
   }
 ];
 

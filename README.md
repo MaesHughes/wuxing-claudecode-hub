@@ -99,7 +99,7 @@ Managing Claude Code extensions today means:
   - Filter by category or search by keyword
 
 - **MCP Servers Management**
-  - Browse marketplace MCP servers
+  - Browse marketplace MCP servers (including Wuxing Search)
   - View installed servers with configuration details
   - Easy config file access for manual setup
   - Support for stdio and HTTP transport types
@@ -250,6 +250,8 @@ Simple markdown-based slash commands. Great for quick workflows, templates, and 
 
 ### 🔌 MCP Servers
 Model Context Protocol servers that connect Claude to external tools, databases, and APIs. Configure stdio or HTTP transport types with custom settings.
+
+> **💡 Featured: [Wuxing Search](https://github.com/MaesHughes/wuxing-search-mcp)** - A free, unlimited search MCP powered by SearXNG. Aggregates 100+ search engines with no API costs or rate limits. Perfect for course development and research.
 
 ### 🤖 Agents
 Custom AI agent configurations with YAML frontmatter metadata. Create specialized agents for specific tasks with custom prompts and behaviors.
