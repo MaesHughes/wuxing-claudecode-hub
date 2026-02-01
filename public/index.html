@@ -344,6 +344,230 @@
       box-shadow: 0 8px 24px rgba(245, 39, 17, 0.3);
     }
 
+    /* MCP Config Modal */
+    .mcp-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+    .mcp-modal-overlay.active {
+      display: flex;
+    }
+    .mcp-modal {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .mcp-modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mcp-modal-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: #1a1a1e;
+    }
+    .mcp-modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #888;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+    .mcp-modal-close:hover {
+      background: #f0f0f5;
+    }
+    .mcp-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .mcp-modal-step {
+      margin-bottom: 20px;
+    }
+    .mcp-modal-step-title {
+      font-weight: 600;
+      color: #1a1a1e;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mcp-modal-step-number {
+      background: #4a90d9;
+      color: #ffffff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+    .mcp-modal-config {
+      background: #f5f5f7;
+      border: 1px solid #e0e0e5;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+    .mcp-modal-config pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.85em;
+      color: #333;
+    }
+    .mcp-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e0e0e5;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .mcp-modal-btn {
+      padding: 10px 20px;
+      border: 1px solid #d0d0d5;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .mcp-modal-btn:hover {
+      background: #f0f0f5;
+    }
+    .mcp-modal-btn.primary {
+      background: #4a90d9;
+      color: #ffffff;
+      border-color: #4a90d9;
+    }
+    .mcp-modal-btn.primary:hover {
+      background: #3a7bc8;
+    }
+    .mcp-modal-warning {
+      background: #fff8e1;
+      border: 1px solid #ffd54f;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    /* Toast Notification System */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 10001;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      min-width: 300px;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+      border-left: 4px solid;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+    .toast.hiding {
+      animation: slideOut 0.3s ease-in forwards;
+    }
+    .toast.success {
+      border-left-color: #28a745;
+    }
+    .toast.info {
+      border-left-color: #4a90d9;
+    }
+    .toast.warning {
+      border-left-color:ffc107;
+    }
+    .toast.error {
+      border-left-color: #dc3545;
+    }
+    .toast-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .toast-content {
+      flex: 1;
+    }
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #333;
+    }
+    .toast-message {
+      color: #666;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+    .toast-close {
+      cursor: pointer;
+      color: #999;
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .toast-close:hover {
+      color: #333;
+    }
+
     /* Language Switcher */
     .lang-switcher {
       position: absolute;
@@ -495,6 +719,26 @@
 
   </div>
 
+  <!-- MCP Config Modal -->
+  <div class="mcp-modal-overlay" id="mcpModalOverlay">
+    <div class="mcp-modal">
+      <div class="mcp-modal-header">
+        <div class="mcp-modal-title" id="mcpModalTitle">MCP 配置</div>
+        <button class="mcp-modal-close" onclick="closeMcpModal()">&times;</button>
+      </div>
+      <div class="mcp-modal-body" id="mcpModalBody">
+        <!-- 动态内容 -->
+      </div>
+      <div class="mcp-modal-footer">
+        <button class="mcp-modal-btn" onclick="closeMcpModal()">取消</button>
+        <button class="mcp-modal-btn primary" onclick="confirmMcpConfig()">打开配置文件夹</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <script>
     // State
     let allSkills = [];
@@ -502,6 +746,7 @@
     let currentSkillsCategory = 'all';
     let currentCommandsCategory = 'all';
     let currentLanguage = 'zh';
+    let currentMcpConfig = null; // 存储当前配置的 MCP
 
     // ==================== Translations ====================
     const translations = {
@@ -643,6 +888,141 @@
       document.getElementById('agentsSearchInput').placeholder = t('searchAgents');
     }
 
+    // ==================== MCP Config Modal ====================
+    function showMcpModal(mcp) {
+      currentMcpConfig = mcp;
+
+      // 设置标题
+      document.getElementById('mcpModalTitle').textContent = `配置 ${mcp.name}`;
+
+      // 生成步骤内容
+      let steps = '';
+
+      // 前置步骤
+      if (mcp.preInstallSteps && mcp.preInstallSteps.length > 0) {
+        steps += '<div class="mcp-modal-step">';
+        steps += '<div class="mcp-modal-step-title"><span class="mcp-modal-step-number">0</span>前置准备</div>';
+        steps += '<ul>';
+        mcp.preInstallSteps.forEach(step => {
+          steps += `<li>${step}</li>`;
+        });
+        steps += '</ul></div>';
+      }
+
+      // 步骤 1: 打开配置
+      steps += '<div class="mcp-modal-step">';
+      steps += '<div class="mcp-modal-step-title"><span class="mcp-modal-step-number">1</span>打开配置文件</div>';
+      steps += '<p>编辑 <code>~/.claude.json</code> 文件</p>';
+      steps += '</div>';
+
+      // 步骤 2: 添加配置
+      steps += '<div class="mcp-modal-step">';
+      steps += '<div class="mcp-modal-step-title"><span class="mcp-modal-step-number">2</span>添加配置</div>';
+      steps += '<p>在 <code>"mcpServers"</code> 部分添加以下配置：</p>';
+      steps += '<div class="mcp-modal-config">';
+      steps += '<pre>' + JSON.stringify(mcp.config, null, 2) + '</pre>';
+      steps += '</div>';
+      steps += '</div>';
+
+      // 步骤 3: 重启
+      steps += '<div class="mcp-modal-step">';
+      steps += '<div class="mcp-modal-step-title"><span class="mcp-modal-step-number">3</span>重启 Claude Code</div>';
+      steps += '<p>保存文件后，重启 Claude Code 即可</p>';
+      steps += '</div>';
+
+      // 认证警告
+      if (mcp.requiresAuth) {
+        steps += '<div class="mcp-modal-warning">';
+        steps += '⚠️ 注意：此服务器需要认证，请配置相关的 API Key 或环境变量。';
+        steps += '</div>';
+      }
+
+      // 后置通知
+      if (mcp.postInstallNotice) {
+        steps += '<div class="mcp-modal-step">';
+        steps += '<div class="mcp-modal-step-title">ℹ️ 说明</div>';
+        steps += `<p>${mcp.postInstallNotice}</p>`;
+        steps += '</div>';
+      }
+
+      // 文档链接
+      if (mcp.homepage) {
+        steps += '<div class="mcp-modal-step">';
+        steps += '<div class="mcp-modal-step-title">📚 更多信息</div>';
+        steps += `<a href="${mcp.homepage}" target="_blank">查看项目文档</a>`;
+        steps += '</div>';
+      }
+
+      document.getElementById('mcpModalBody').innerHTML = steps;
+      document.getElementById('mcpModalOverlay').classList.add('active');
+    }
+
+    function closeMcpModal() {
+      document.getElementById('mcpModalOverlay').classList.remove('active');
+      currentMcpConfig = null;
+    }
+
+    // ==================== Toast Notification System ====================
+    function showToast(type, title, message, duration = 5000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      const icons = {
+        success: '✅',
+        info: 'ℹ️',
+        warning: '⚠️',
+        error: '❌'
+      };
+
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <div class="toast-close" onclick="this.parentElement.remove()">&times;</div>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
+    // ==================== MCP Functions ====================
+    function confirmMcpConfig() {
+      if (!currentMcpConfig) return;
+
+      // 打开配置文件夹
+      fetch('/api/mcp/open-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scope: 'user' })
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success) {
+            showToast('success', '配置文件夹已打开', `${result.message}\n\n请按照上述说明手动配置 MCP server。`, 8000);
+            closeMcpModal();
+          } else {
+            showToast('error', '打开配置失败', result.error);
+          }
+        })
+        .catch(error => {
+          showToast('error', '错误', error.message);
+        });
+    }
+
+    // 点击模态框外部关闭
+    document.getElementById('mcpModalOverlay').addEventListener('click', function(e) {
+      if (e.target.id === 'mcpModalOverlay') {
+        closeMcpModal();
+      }
+    });
+
     // ==================== Tabs Navigation ====================
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -706,9 +1086,9 @@
             <div class="skill-desc">${skill.description}</div>
             <div class="skill-footer">
               <div class="skill-meta">
-                <span class="status-installed">✓ 已安装</span>
+                <span class="status-installed">✓ 自动安装</span>
                 <button class="uninstall-btn" onclick="uninstallSkill('${skill.id}', '${skill.name}')">
-                  卸载
+                  卸载 (打开文件夹)
                 </button>
               </div>
               <div class="uninstall-info">
@@ -786,7 +1166,7 @@
       btn.textContent = '安装中...';
 
       try {
-        const response = await fetch(`/api/skills/${skillId}`, {
+        const response = await fetch(`/api/skills/${skillId}/install`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ scope: 'global' })
@@ -818,14 +1198,19 @@
         const result = await response.json();
 
         if (result.success) {
+          showToast('info', '文件夹已打开',
+            `要卸载 "${skillName}"，请按以下步骤操作：\n\n` +
+            `1. 在打开的文件夹中找到 ~/.claude/skills/ 目录\n` +
+            `2. 删除 "${skillId}" 文件夹\n\n` +
+            `删除后页面将自动刷新。`, 12000);
           setTimeout(() => {
             loadSkills();
           }, 2000);
         } else {
-          alert('❌ 打开文件夹失败: ' + result.error);
+          showToast('error', '打开文件夹失败', result.error);
         }
       } catch (error) {
-        alert('❌ 错误: ' + error.message);
+        showToast('error', '错误', error.message);
       }
     }
 
@@ -871,10 +1256,10 @@
               <div class="skill-desc">${cmd.description}</div>
               <div class="skill-footer">
                 <div class="skill-meta">
-                  <span class="status-installed">✓ 已安装</span>
+                  <span class="status-installed">✓ 自动安装</span>
                   ${!cmd.isFromMarketplace ? '<span style="color:#888;font-size:0.8em">第三方</span>' : ''}
                   <button class="uninstall-btn" onclick="uninstallCommand('${cmd.id}')">
-                    卸载
+                    卸载 (打开文件夹)
                   </button>
                 </div>
                 <div class="uninstall-info">
@@ -975,6 +1360,9 @@
     }
 
     async function uninstallCommand(commandId) {
+      const command = allCommands.find(c => c.id === commandId);
+      const commandName = command ? command.name : commandId;
+
       try {
         const response = await fetch('/api/commands/open-folder', {
           method: 'POST',
@@ -985,15 +1373,19 @@
         const result = await response.json();
 
         if (result.success) {
-          // 刷新状态（用户删除后可能需要刷新）
+          showToast('info', '文件夹已打开',
+            `要卸载 "${commandName}"，请按以下步骤操作：\n\n` +
+            `1. 在打开的文件夹中找到 ~/.claude/commands/ 目录\n` +
+            `2. 删除 "${commandId}" 文件夹\n\n` +
+            `删除后页面将自动刷新。`, 12000);
           setTimeout(() => {
             renderInstalledCommands();
           }, 2000);
         } else {
-          alert('❌ 打开文件夹失败: ' + result.error);
+          showToast('error', '打开文件夹失败', result.error);
         }
       } catch (error) {
-        alert('❌ 错误: ' + error.message);
+        showToast('error', '错误', error.message);
       }
     }
 
@@ -1083,11 +1475,11 @@
                 <div class="skill-desc">${mcp.description || '无描述'}</div>
                 <div class="skill-footer">
                   <div class="skill-meta">
-                    <span class="status-installed">✓ 已安装</span>
+                    <span class="status-installed">✓ 手动配置</span>
                     <span style="color:#888;font-size:0.8em">${typeLabel}</span>
                     ${!mcp.fromMarketplace ? '<span style="color:#888;font-size:0.8em">自定义</span>' : ''}
-                    <button class="uninstall-btn" onclick="uninstallMcp()">
-                      卸载
+                    <button class="uninstall-btn" onclick="uninstallMcp('${mcp.id}', '${mcp.name.replace(/'/g, "\\'")}')">
+                      卸载 (编辑配置)
                     </button>
                   </div>
                 </div>
@@ -1200,64 +1592,35 @@
       const mcp = allMcp.find(m => m.id === mcpId);
       if (!mcp) return;
 
-      const message = `
-要安装 "${mcp.name}" MCP server，请按照以下步骤操作：
-
-1. 打开配置文件所在文件夹
-2. 编辑 ~/.claude.json 文件
-3. 在 "mcpServers" 部分添加以下配置：
-
-${JSON.stringify(mcp.config, null, 2)}
-
-4. 保存文件后，重启 Claude Code
-${mcp.requiresAuth ? '\n⚠️ 此服务器需要认证，请配置相关的 API Key 或环境变量。' : ''}
-
-点击"确定"打开配置文件夹，取消放弃安装。
-      `;
-
-      if (confirm(message)) {
-        try {
-          const response = await fetch('/api/mcp/open-config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ scope: 'user' })
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            alert('✅ ' + result.message + '\n\n请按照上述说明手动配置 MCP server。');
-          } else {
-            alert('❌ 打开配置失败: ' + result.error);
-          }
-        } catch (error) {
-          alert('❌ 错误: ' + error.message);
-        }
-      }
+      // 显示配置模态框
+      showMcpModal(mcp);
     }
 
-    async function uninstallMcp() {
-      if (confirm('要卸载 MCP server，请手动编辑 ~/.claude.json 文件，删除对应的配置项。\n\n点击"确定"打开配置文件夹。')) {
-        try {
-          const response = await fetch('/api/mcp/open-config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ scope: 'user' })
-          });
+    async function uninstallMcp(mcpId, mcpName) {
+      try {
+        const response = await fetch('/api/mcp/open-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'user' })
+        });
 
-          const result = await response.json();
+        const result = await response.json();
 
-          if (result.success) {
-            alert('✅ ' + result.message);
-            setTimeout(() => {
-              renderInstalledMcp();
-            }, 2000);
-          } else {
-            alert('❌ 打开配置失败: ' + result.error);
-          }
-        } catch (error) {
-          alert('❌ 错误: ' + error.message);
+        if (result.success) {
+          showToast('info', '配置文件夹已打开',
+            `要卸载 "${mcpName}"，请按以下步骤操作：\n\n` +
+            `1. 在打开的文件夹中找到 ~/.claude.json 文件\n` +
+            `2. 找到 "mcpServers" 部分\n` +
+            `3. 删除名为 "${mcpId}" 的配置项\n\n` +
+            `删除后页面将自动刷新。`, 12000);
+          setTimeout(() => {
+            renderInstalledMcp();
+          }, 2000);
+        } else {
+          showToast('error', '打开配置失败', result.error);
         }
+      } catch (error) {
+        showToast('error', '错误', error.message);
       }
     }
 
@@ -1307,11 +1670,11 @@ ${mcp.requiresAuth ? '\n⚠️ 此服务器需要认证，请配置相关的 API
                 <div class="skill-desc">${agent.description}</div>
                 <div class="skill-footer">
                   <div class="skill-meta">
-                    <span class="status-installed">✓ 已安装</span>
+                    <span class="status-installed">✓ 手动配置</span>
                     <span style="color:#888;font-size:0.8em">${agent.category}</span>
                     ${!agent.fromMarketplace ? '<span style="color:#888;font-size:0.8em">自定义</span>' : ''}
-                    <button class="uninstall-btn" onclick="uninstallAgent()">
-                      卸载
+                    <button class="uninstall-btn" onclick="uninstallAgent('${agent.id}', '${agent.name.replace(/'/g, "\\'")}')">
+                      卸载 (打开文件夹)
                     </button>
                   </div>
                 </div>
@@ -1433,28 +1796,30 @@ author: ${agent.author}
       }
     }
 
-    async function uninstallAgent() {
-      if (confirm('要卸载 Agent，请手动删除 ~/.claude/agents/ 目录中对应的 .md 文件。\n\n点击"确定"打开 Agents 文件夹。')) {
-        try {
-          const response = await fetch('/api/agents/open-folder', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ scope: 'user' })
-          });
+    async function uninstallAgent(agentId, agentName) {
+      try {
+        const response = await fetch('/api/agents/open-folder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scope: 'user' })
+        });
 
-          const result = await response.json();
+        const result = await response.json();
 
-          if (result.success) {
-            alert('✅ ' + result.message);
-            setTimeout(() => {
-              renderInstalledAgents();
-            }, 2000);
-          } else {
-            alert('❌ 打开文件夹失败: ' + result.error);
-          }
-        } catch (error) {
-          alert('❌ 错误: ' + error.message);
+        if (result.success) {
+          showToast('info', 'Agents 文件夹已打开',
+            `要卸载 "${agentName}"，请按以下步骤操作：\n\n` +
+            `1. 在打开的文件夹中找到 ~/.claude/agents/ 目录\n` +
+            `2. 删除 "${agentId}.md" 文件\n\n` +
+            `删除后页面将自动刷新。`, 12000);
+          setTimeout(() => {
+            renderInstalledAgents();
+          }, 2000);
+        } else {
+          showToast('error', '打开文件夹失败', result.error);
         }
+      } catch (error) {
+        showToast('error', '错误', error.message);
       }
     }
 
